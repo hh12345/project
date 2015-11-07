@@ -11,7 +11,26 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @movies = Movie.all
+    @all_ratings=Movie.ratingcollection  
+    if params[:ratings]  
+      @ratings=params[:ratings].keys  
+    else  
+      @ratings=@all_ratings  
+    end  
+    @movies=Movie.where(rating: @ratings)  
+  
+    @sorted=0  
+    @selectsort="waitparams"  
+    if params[:selectsort]  
+      @selectsort=params[:selectsort]  
+      @movies=@movies.sort_by{|movie| movie[@selectsort]}  
+      if params[:sort].to_i==1  
+        @movies=@movies.reverse  
+        @sorted=0  
+      else  
+        @sorted=1  
+      end  
+    end  
   end
 
   def new
